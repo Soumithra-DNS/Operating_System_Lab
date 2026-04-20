@@ -1,0 +1,1 @@
+{"name":"Local: FCFS","url":"/media/shanto/Captain America/All Semester/3,2/Operating Systems/Lab/MY Lab/FCFS.cpp","tests":[{"id":1776653926366,"input":"5\n4 2\n0 3\n2 1\n1 4\n3 2","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"/media/shanto/Captain America/All Semester/3,2/Operating Systems/Lab/MY Lab/FCFS.cpp","group":"local","local":true}
