@@ -7,9 +7,9 @@ bool isSafe(vector<vector<int>> &alloc,
             vector<int> &avail,
             int n, int m)
 {
-
     vector<vector<int>> need(n, vector<int>(m));
 
+    // Calculate Need = Max - Allocation
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < m; j++)
@@ -20,7 +20,6 @@ bool isSafe(vector<vector<int>> &alloc,
 
     vector<bool> finish(n, false);
     vector<int> safeSeq;
-
     vector<int> work = avail;
 
     int count = 0;
@@ -46,11 +45,9 @@ bool isSafe(vector<vector<int>> &alloc,
 
                 if (canExecute)
                 {
-                    // Add allocated resources back
+                    // Release resources
                     for (int j = 0; j < m; j++)
-                    {
                         work[j] += alloc[i][j];
-                    }
 
                     safeSeq.push_back(i);
                     finish[i] = true;
@@ -62,12 +59,13 @@ bool isSafe(vector<vector<int>> &alloc,
 
         if (!found)
         {
-            cout << "System is NOT in safe state!\n";
+            cout << "\nSystem is NOT in safe state!\n";
             return false;
         }
     }
 
-    // Print safe sequence
+    // Safe sequence
+    cout << "\nSystem is in SAFE state\n";
     cout << "Safe sequence: ";
     for (int i = 0; i < n; i++)
     {
