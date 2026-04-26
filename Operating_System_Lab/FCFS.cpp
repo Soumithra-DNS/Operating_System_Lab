@@ -9,11 +9,10 @@ int main()
 
     int at[n], bt[n], ct[n], tat[n], wt[n], pid[n];
 
-    // Input (compact style)
     cout << "Enter Arrival Time and Burst Time:\n";
     for (int i = 0; i < n; i++)
     {
-        pid[i] = i + 1;   // Process ID
+        pid[i] = i + 1;
         cin >> at[i] >> bt[i];
     }
 
@@ -31,45 +30,37 @@ int main()
         }
     }
 
-    // FCFS Calculation
     int current_time = 0;
 
+    // FCFS Calculation
     for (int i = 0; i < n; i++)
     {
-        // Handle CPU idle time
         if (current_time < at[i])
             current_time = at[i];
 
-        ct[i] = current_time + bt[i];   // Completion Time
-        tat[i] = ct[i] - at[i];        // Turnaround Time
-        wt[i] = tat[i] - bt[i];        // Waiting Time
+        ct[i] = current_time + bt[i];
+        tat[i] = ct[i] - at[i];
+        wt[i] = tat[i] - bt[i];
 
         current_time = ct[i];
     }
 
-    // Output
+    // Output Table
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
+
+    float total_wt = 0, total_tat = 0;
+
     for (int i = 0; i < n; i++)
     {
         cout << "P" << pid[i] << "\t" << at[i] << "\t" << bt[i] << "\t"
              << ct[i] << "\t" << tat[i] << "\t" << wt[i] << endl;
+
+        total_wt += wt[i];
+        total_tat += tat[i];
     }
 
-    // Average Waiting Time
-    float total_wt = 0;
-    for (int i = 0; i < n; i++)
-        total_wt += wt[i];
-
     cout << "\nAverage Waiting Time = " << total_wt / n << endl;
+    cout << "Average Turnaround Time = " << total_tat / n << endl;
 
     return 0;
 }
-
-/*
-5
-4 2
-0 3
-2 1
-1 4
-3 2
-*/
