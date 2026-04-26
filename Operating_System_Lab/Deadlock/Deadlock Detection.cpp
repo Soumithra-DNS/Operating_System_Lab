@@ -22,7 +22,7 @@ bool detectDeadlock(vector<vector<int>> &alloc,
             {
                 bool canExecute = true;
 
-                // Check if Request <= Work
+                //Check if Request <= Work
                 for (int j = 0; j < m; j++)
                 {
                     if (request[i][j] > work[j])
