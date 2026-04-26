@@ -18,17 +18,21 @@ int main()
     cout << "Enter frame capacity: ";
     cin >> capacity;
 
-    set<int> s;       // to check presence
+    set<int> s;       // check presence
     queue<int> q;     // FIFO order
 
-    int page_faults = 0;
+    int page_faults = 0, page_hits = 0;
 
     for (int i = 0; i < n; i++)
     {
-        // If page not present → page fault
-        if (s.find(pages[i]) == s.end())
+        // HIT case
+        if (s.find(pages[i]) != s.end())
         {
-            // If memory full → remove oldest page
+            page_hits++;
+        }
+        else
+        {
+            // FAULT case
             if (s.size() == capacity)
             {
                 int val = q.front();
@@ -36,14 +40,14 @@ int main()
                 s.erase(val);
             }
 
-            // Insert new page
             s.insert(pages[i]);
             q.push(pages[i]);
             page_faults++;
         }
     }
 
-    cout << "\nTotal Page Faults = " << page_faults << endl;
+    cout << "\nPage Hits = " << page_hits << endl;
+    cout << "Page Faults = " << page_faults << endl;
 
     return 0;
 }
