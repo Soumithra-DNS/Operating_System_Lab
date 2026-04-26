@@ -48,7 +48,7 @@ bool detectDeadlock(vector<vector<int>> &alloc,
         }
 
         if (!found)
-            break; // no process can execute
+            break; 
     }
 
     // Check deadlock
@@ -60,6 +60,8 @@ bool detectDeadlock(vector<vector<int>> &alloc,
         if (!finish[i])
         {
             cout << "P" << i;
+            if (i != n - 1)
+            cout << " ";
             deadlock = true;
         }
     }
