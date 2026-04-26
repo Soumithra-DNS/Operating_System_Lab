@@ -27,6 +27,8 @@ int main()
 
     int time = 0, page_faults = 0;
 
+    cout << "\nPage\tFrames\n";
+
     for (int i = 0; i < n; i++)
     {
         bool found = false;
@@ -37,50 +39,59 @@ int main()
             if (fr[j] == pages[i])
             {
                 found = true;
-                last_used[j] = time++; // update recent use
+                last_used[j] = time++;
                 break;
             }
         }
 
-        if (found)
-            continue;
+        // If FAULT
+        if (!found)
+        {
+            page_faults++;
 
-        // Page FAULT
-        page_faults++;
+            int idx = -1;
 
-        int idx = -1;
+            // Empty frame
+            for (int j = 0; j < capacity; j++)
+            {
+                if (fr[j] == -1)
+                {
+                    idx = j;
+                    break;
+                }
+            }
 
-        // Check empty frame
+            // Find LRU
+            if (idx == -1)
+            {
+                int lru = 1e9;
+                for (int j = 0; j < capacity; j++)
+                {
+                    if (last_used[j] < lru)
+                    {
+                        lru = last_used[j];
+                        idx = j;
+                    }
+                }
+            }
+
+            fr[idx] = pages[i];
+            last_used[idx] = time++;
+        }
+
+        // Display frame after each step
+        cout << pages[i] << "\t";
         for (int j = 0; j < capacity; j++)
         {
             if (fr[j] == -1)
-            {
-                idx = j;
-                break;
-            }
+                cout << "- ";
+            else
+                cout << fr[j] << " ";
         }
-
-        // If no empty frame → find LRU
-        if (idx == -1)
-        {
-            int lru = 1e9;
-            for (int j = 0; j < capacity; j++)
-            {
-                if (last_used[j] < lru)
-                {
-                    lru = last_used[j];
-                    idx = j;
-                }
-            }
-        }
-
-        // Replace page
-        fr[idx] = pages[i];
-        last_used[idx] = time++;
+        cout << endl;
     }
 
     cout << "\nTotal Page Faults = " << page_faults << endl;
 
     return 0;
 }
-
