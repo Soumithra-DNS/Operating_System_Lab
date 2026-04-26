@@ -15,28 +15,32 @@ int main()
         pid[i] = i + 1;
         cout << "Enter AT and BT for P" << i + 1 << ": ";
         cin >> at[i] >> bt[i];
-        rt[i] = bt[i];   // remaining time
+        rt[i] = bt[i];
     }
 
     int completed = 0, current_time = 0;
 
-    // SRTF Logic (Preemptive)
+    // SRTF Scheduling
     while (completed < n)
     {
         int idx = -1;
         int min_rt = 1e9;
 
-        // Find process with minimum remaining time
         for (int i = 0; i < n; i++)
         {
-            if (at[i] <= current_time && rt[i] > 0 && rt[i] < min_rt)
+            if (at[i] <= current_time && rt[i] > 0)
             {
-                min_rt = rt[i];
-                idx = i;
+                if (idx == -1 ||
+                    rt[i] < min_rt ||
+                    (rt[i] == min_rt && at[i] < at[idx]))
+                {
+                    min_rt = rt[i];
+                    idx = i;
+                }
             }
         }
 
-        // If no process available → CPU idle
+        // CPU Idle
         if (idx == -1)
         {
             current_time++;
@@ -47,7 +51,7 @@ int main()
         rt[idx]--;
         current_time++;
 
-        // If process finished
+        // If finished
         if (rt[idx] == 0)
         {
             ct[idx] = current_time;
@@ -59,16 +63,13 @@ int main()
 
     // Output
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
+    float total_wt = 0, total_tat = 0;
+
     for (int i = 0; i < n; i++)
     {
         cout << "P" << pid[i] << "\t" << at[i] << "\t" << bt[i] << "\t"
              << ct[i] << "\t" << tat[i] << "\t" << wt[i] << endl;
-    }
 
-    // Average
-    float total_wt = 0, total_tat = 0;
-    for (int i = 0; i < n; i++)
-    {
         total_wt += wt[i];
         total_tat += tat[i];
     }
