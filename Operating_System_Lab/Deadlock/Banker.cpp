@@ -2,7 +2,6 @@
 #include <vector>
 using namespace std;
 
-// Function to find safe sequence
 bool isSafe(vector<vector<int>> &alloc,
             vector<vector<int>> &max,
             vector<int> &avail,
@@ -10,7 +9,6 @@ bool isSafe(vector<vector<int>> &alloc,
 
     vector<vector<int>> need(n, vector<int>(m));
 
-    // Calculate Need matrix
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < m; j++) {
             need[i][j] = max[i][j] - alloc[i][j];
