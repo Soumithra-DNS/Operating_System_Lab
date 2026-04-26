@@ -15,7 +15,7 @@ int main()
         pid[i] = i + 1;
         cout << "Enter AT, BT, Priority for P" << i + 1 << ": ";
         cin >> at[i] >> bt[i] >> pr[i];
-        rt[i] = bt[i]; // remaining time
+        rt[i] = bt[i];
     }
 
     int completed = 0, current_time = 0;
@@ -24,30 +24,34 @@ int main()
     while (completed < n)
     {
         int idx = -1;
-        int highest_priority = 1e9; // smaller value = higher priority
+        int highest_priority = 1e9;
 
-        // Find highest priority process among arrived
         for (int i = 0; i < n; i++)
         {
-            if (at[i] <= current_time && rt[i] > 0 && pr[i] < highest_priority)
+            if (at[i] <= current_time && rt[i] > 0)
             {
-                highest_priority = pr[i];
-                idx = i;
+                if (idx == -1 ||
+                    pr[i] < highest_priority ||
+                    (pr[i] == highest_priority && at[i] < at[idx]))
+                {
+                    highest_priority = pr[i];
+                    idx = i;
+                }
             }
         }
 
-        // If no process available → CPU idle
+        // CPU Idle
         if (idx == -1)
         {
             current_time++;
             continue;
         }
 
-        // Execute for 1 unit (PREEMPTIVE)
+        // Execute for 1 unit
         rt[idx]--;
         current_time++;
 
-        // If process completed
+        // If finished
         if (rt[idx] == 0)
         {
             ct[idx] = current_time;
