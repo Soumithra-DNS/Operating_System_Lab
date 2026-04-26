@@ -2,7 +2,6 @@
 #include <vector>
 using namespace std;
 
-
 bool detectDeadlock(vector<vector<int>> &alloc,
                     vector<vector<int>> &request,
                     vector<int> &avail,
