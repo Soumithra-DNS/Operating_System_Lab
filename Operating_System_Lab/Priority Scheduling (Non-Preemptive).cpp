@@ -24,26 +24,30 @@ int main()
     while (completed < n)
     {
         int idx = -1;
-        int highest_priority = 1e9; // smaller value = higher priority
+        int highest_priority = 1e9;
 
-        // Find highest priority process among arrived
         for (int i = 0; i < n; i++)
         {
-            if (!done[i] && at[i] <= current_time && pr[i] < highest_priority)
+            if (!done[i] && at[i] <= current_time)
             {
-                highest_priority = pr[i];
-                idx = i;
+                // Higher priority OR tie → earlier arrival
+                if (pr[i] < highest_priority ||
+                    (pr[i] == highest_priority && at[i] < at[idx]))
+                {
+                    highest_priority = pr[i];
+                    idx = i;
+                }
             }
         }
 
-        // If no process available → CPU idle
+        // CPU Idle
         if (idx == -1)
         {
             current_time++;
             continue;
         }
 
-        // Execute process
+        // Execute
         ct[idx] = current_time + bt[idx];
         tat[idx] = ct[idx] - at[idx];
         wt[idx] = tat[idx] - bt[idx];
