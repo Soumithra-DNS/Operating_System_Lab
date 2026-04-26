@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <vector>
 using namespace std;
 
 int main()
@@ -12,7 +13,7 @@ int main()
     cin >> quantum;
 
     int at[n], bt[n], rt[n], ct[n], tat[n], wt[n], pid[n];
-    queue<int> q;
+    bool inQueue[n] = {false};
 
     // Input
     for (int i = 0; i < n; i++)
@@ -20,27 +21,38 @@ int main()
         pid[i] = i + 1;
         cout << "Enter AT and BT for P" << i + 1 << ": ";
         cin >> at[i] >> bt[i];
-        rt[i] = bt[i]; // remaining time
+        rt[i] = bt[i];
     }
 
-    int current_time = 0, completed = 0;
-    bool inQueue[n] = {false};
+    queue<int> q;
 
-    // Start with first process
-    q.push(0);
-    inQueue[0] = true;
+    int current_time = 0, completed = 0;
+
+    // Find first arriving process
+    int first = 0;
+    for (int i = 1; i < n; i++)
+    {
+        if (at[i] < at[first])
+            first = i;
+    }
+
+    current_time = at[first];
+    q.push(first);
+    inQueue[first] = true;
+
+    vector<string> gantt; // for Gantt chart
 
     while (!q.empty())
     {
         int i = q.front();
         q.pop();
 
-        // If CPU is idle
-        if (current_time < at[i])
-            current_time = at[i];
-
         // Execute process
         int exec_time = min(quantum, rt[i]);
+
+        // Add to Gantt chart
+        gantt.push_back("P" + to_string(pid[i]));
+
         rt[i] -= exec_time;
         current_time += exec_time;
 
@@ -54,7 +66,7 @@ int main()
             }
         }
 
-        // If process not finished → push again
+        // If not finished → push back
         if (rt[i] > 0)
         {
             q.push(i);
@@ -68,7 +80,13 @@ int main()
         }
     }
 
-    // Output
+    // Gantt Chart
+    cout << "\nGantt Chart:\n";
+    for (auto &p : gantt)
+        cout << "| " << p << " ";
+    cout << "|\n";
+
+    // Output Table
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
     float total_wt = 0, total_tat = 0;
 
