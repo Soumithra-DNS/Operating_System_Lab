@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 int main()
@@ -20,27 +21,36 @@ int main()
 
     int completed = 0, current_time = 0;
 
+    vector<string> gantt; // store execution order
+
     while (completed < n)
     {
         int idx = -1;
         int min_bt = 1e9;
 
-        // Find shortest job among arrived processes
         for (int i = 0; i < n; i++)
         {
-            if (!done[i] && at[i] <= current_time && bt[i] < min_bt)
+            if (!done[i] && at[i] <= current_time)
             {
-                min_bt = bt[i];
-                idx = i;
+                if (idx == -1 ||
+                    bt[i] < min_bt ||
+                    (bt[i] == min_bt && at[i] < at[idx]))
+                {
+                    min_bt = bt[i];
+                    idx = i;
+                }
             }
         }
 
-        // If no process is available → CPU idle
+        // CPU Idle
         if (idx == -1)
         {
             current_time++;
             continue;
         }
+
+        // Add to Gantt Chart
+        gantt.push_back("P" + to_string(pid[idx]));
 
         // Execute process
         ct[idx] = current_time + bt[idx];
@@ -52,18 +62,21 @@ int main()
         completed++;
     }
 
-    // Output
+    // Gantt Chart
+    cout << "\nGantt Chart:\n";
+    for (auto &p : gantt)
+        cout << "| " << p << " ";
+    cout << "|\n";
+
+    // Output Table
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
+    float total_wt = 0, total_tat = 0;
+
     for (int i = 0; i < n; i++)
     {
         cout << "P" << pid[i] << "\t" << at[i] << "\t" << bt[i] << "\t"
              << ct[i] << "\t" << tat[i] << "\t" << wt[i] << endl;
-    }
 
-    // Averages
-    float total_wt = 0, total_tat = 0;
-    for (int i = 0; i < n; i++)
-    {
         total_wt += wt[i];
         total_tat += tat[i];
     }
