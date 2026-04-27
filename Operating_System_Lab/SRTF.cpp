@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main()
@@ -19,6 +19,8 @@ int main()
     }
 
     int completed = 0, current_time = 0;
+
+    vector<string> gantt; // store execution order
 
     // SRTF Scheduling
     while (completed < n)
@@ -50,6 +52,7 @@ int main()
         // Execute for 1 unit
         rt[idx]--;
         current_time++;
+        gantt.push_back("P" + to_string(pid[idx]));
 
         // If finished
         if (rt[idx] == 0)
@@ -60,6 +63,12 @@ int main()
             completed++;
         }
     }
+
+    // Gantt Chart
+    cout << "\nGantt Chart:\n";
+    for (auto &p : gantt)
+        cout << "| " << p << " ";
+    cout << "|\n";
 
     // Output
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
