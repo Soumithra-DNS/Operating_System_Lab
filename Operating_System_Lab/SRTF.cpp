@@ -9,7 +9,6 @@ int main()
 
     int at[n], bt[n], rt[n], ct[n], tat[n], wt[n], pid[n];
 
-    // Input
     for (int i = 0; i < n; i++)
     {
         pid[i] = i + 1;
@@ -20,9 +19,8 @@ int main()
 
     int completed = 0, current_time = 0;
 
-    vector<string> gantt; // store execution order
+    vector<string> gantt;
 
-    // SRTF Scheduling
     while (completed < n)
     {
         int idx = -1;
@@ -42,19 +40,17 @@ int main()
             }
         }
 
-        // CPU Idle
         if (idx == -1)
         {
+            gantt.push_back("Idle");   
             current_time++;
             continue;
         }
 
-        // Execute for 1 unit
         rt[idx]--;
-        current_time++;
         gantt.push_back("P" + to_string(pid[idx]));
+        current_time++;
 
-        // If finished
         if (rt[idx] == 0)
         {
             ct[idx] = current_time;
@@ -64,14 +60,18 @@ int main()
         }
     }
 
-    // Gantt Chart
+    // Gantt Chart with time
     cout << "\nGantt Chart:\n";
-    for (auto &p : gantt)
-        cout << "| " << p << " ";
+    for (int i = 0; i < gantt.size(); i++)
+        cout << "| " << gantt[i] << " ";
     cout << "|\n";
 
+    cout << "0 ";
+    for (int i = 1; i <= gantt.size(); i++)
+        cout << i << " ";
+
     // Output
-    cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
+    cout << "\n\nPID\tAT\tBT\tCT\tTAT\tWT\n";
     float total_wt = 0, total_tat = 0;
 
     for (int i = 0; i < n; i++)
@@ -88,3 +88,12 @@ int main()
 
     return 0;
 }
+
+/*
+5
+0 7
+2 4
+4 1
+5 4
+6 3
+*/
