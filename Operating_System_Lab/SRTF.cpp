@@ -42,7 +42,6 @@ int main()
 
         if (idx == -1)
         {
-            gantt.push_back("Idle");   
             current_time++;
             continue;
         }
