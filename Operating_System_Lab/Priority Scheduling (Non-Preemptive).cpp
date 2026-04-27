@@ -31,7 +31,7 @@ int main()
             if (!done[i] && at[i] <= current_time)
             {
                 // Higher priority OR tie → earlier arrival
-                if (pr[i] < highest_priority ||
+                if (idx == -1 ||pr[i] < highest_priority ||
                     (pr[i] == highest_priority && at[i] < at[idx]))
                 {
                     highest_priority = pr[i];
@@ -75,3 +75,12 @@ int main()
 
     return 0;
 }
+/*
+5
+0 4 2
+1 3 1
+2 1 4
+3 2 3
+4 5 2
+
+*/
