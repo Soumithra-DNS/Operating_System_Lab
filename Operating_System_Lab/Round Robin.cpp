@@ -1,4 +1,4 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main()
@@ -10,8 +10,8 @@ int main()
     cout << "Enter Time Quantum: ";
     cin >> quantum;
 
-    int at[n], bt[n], rt[n], ct[n], tat[n], wt[n], pid[n];
-    bool inQueue[n] = {false};
+    vector<int> at(n), bt(n), rt(n), ct(n), tat(n), wt(n), pid(n);
+    vector<bool> inQueue(n, false);
 
     // Input
     for (int i = 0; i < n; i++)
@@ -22,49 +22,79 @@ int main()
         rt[i] = bt[i];
     }
 
-    queue<int> q;
-
-    int current_time = 0, completed = 0;
-
-    // Find first arriving process
-    int first = 0;
-    for (int i = 1; i < n; i++)
+    // Sort processes by Arrival Time
+    for (int i = 0; i < n - 1; i++)
     {
-        if (at[i] < at[first])
-            first = i;
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (at[j] > at[j + 1])
+            {
+                swap(at[j], at[j + 1]);
+                swap(bt[j], bt[j + 1]);
+                swap(rt[j], rt[j + 1]);
+                swap(pid[j], pid[j + 1]);
+            }
+        }
     }
 
-    current_time = at[first];
-    q.push(first);
-    inQueue[first] = true;
+    queue<int> q;
+    int current_time = 0, completed = 0;
+    vector<string> gantt;
 
-    vector<string> gantt; // for Gantt chart
-
-    while (!q.empty())
+    // Check if any process arrives exactly at time 0
+    for (int j = 0; j < n; j++)
     {
+        if (at[j] <= current_time && !inQueue[j])
+        {
+            q.push(j);
+            inQueue[j] = true;
+        }
+    }
+
+    while (completed < n)
+    {
+        if (q.empty())
+        {
+            // FIX: Explicitly log idle time in the Gantt chart
+            gantt.push_back("IDLE");
+            current_time++;
+
+            for (int j = 0; j < n; j++)
+            {
+                if (at[j] <= current_time && !inQueue[j])
+                {
+                    q.push(j);
+                    inQueue[j] = true;
+                }
+            }
+            continue;
+        }
+
         int i = q.front();
         q.pop();
 
-        // Execute process
         int exec_time = min(quantum, rt[i]);
 
-        // Add to Gantt chart
-        gantt.push_back("P" + to_string(pid[i]));
+        // Per unit time Gantt
+        for (int t = 0; t < exec_time; t++)
+        {
+            gantt.push_back("P" + to_string(pid[i]));
+        }
 
         rt[i] -= exec_time;
         current_time += exec_time;
 
-        // Check new arrivals
+        // Add new arrivals (FCFS order maintained because sorted by AT initially)
         for (int j = 0; j < n; j++)
         {
-            if (at[j] <= current_time && !inQueue[j] && rt[j] > 0)
+            if (at[j] <= current_time && !inQueue[j])
             {
                 q.push(j);
                 inQueue[j] = true;
             }
         }
 
-        // If not finished → push back
+        // Put the running process back in the queue if it's not finished
         if (rt[i] > 0)
         {
             q.push(i);
@@ -78,13 +108,30 @@ int main()
         }
     }
 
+    // FIX: Sort back by PID to display the final table cleanly
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < n - i - 1; j++)
+        {
+            if (pid[j] > pid[j + 1])
+            {
+                swap(pid[j], pid[j + 1]);
+                swap(at[j], at[j + 1]);
+                swap(bt[j], bt[j + 1]);
+                swap(ct[j], ct[j + 1]);
+                swap(tat[j], tat[j + 1]);
+                swap(wt[j], wt[j + 1]);
+            }
+        }
+    }
+
     // Gantt Chart
-    cout << "\nGantt Chart:\n";
+    cout << "\nGantt Chart (Per Unit Time):\n";
     for (auto &p : gantt)
         cout << "| " << p << " ";
     cout << "|\n";
 
-    // Output Table
+    // Output
     cout << "\nPID\tAT\tBT\tCT\tTAT\tWT\n";
     float total_wt = 0, total_tat = 0;
 
@@ -97,18 +144,10 @@ int main()
         total_tat += tat[i];
     }
 
+    // Added fixed precision for cleaner decimal output
+    cout << fixed << setprecision(2);
     cout << "\nAverage WT = " << total_wt / n << endl;
     cout << "Average TAT = " << total_tat / n << endl;
 
     return 0;
 }
-
-
-/*
-4
-2
-0 5
-1 4
-2 2
-3 1
-*/
